@@ -6,7 +6,7 @@ export default function RecursosPage() {
   return (
     <GeradorUpload
       titulo="Recurso Ordinário"
-      descricao="Envie o PDF da sentença desfavorável para gerar as razões recursais."
+      subtitulo="Envie a sentença desfavorável. A IA monta as razões recursais no estilo do escritório."
       onSubmit={(file) => api.gerarRecurso(file)}
     />
   );
