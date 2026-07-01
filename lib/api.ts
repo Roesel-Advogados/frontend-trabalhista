@@ -29,4 +29,14 @@ export const api = {
     if (!res.ok) throw new Error(await res.text());
     return res.json();
   },
+
+  baixarDocx: async (conteudo: string, titulo = "Contestação") => {
+    const res = await fetch(`${API}/api/defesa/docx`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ conteudo, titulo }),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    return res.blob();
+  },
 };

@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
-import { Upload, Loader2, AlertCircle, Copy, Check, Scale } from "lucide-react";
+import { Upload, Loader2, AlertCircle, Copy, Check, Scale, Download } from "lucide-react";
+import { api } from "@/lib/api";
 
 type Props = {
   titulo: string;
@@ -16,6 +17,7 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".
   const [resultado, setResultado] = useState<any>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [copiado, setCopiado] = useState(false);
+  const [baixando, setBaixando] = useState(false);
 
   async function gerar() {
     if (!file) return;
@@ -29,6 +31,24 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".
     if (!resultado?.conteudo) return;
     await navigator.clipboard.writeText(resultado.conteudo);
     setCopiado(true); setTimeout(() => setCopiado(false), 2000);
+  }
+
+  async function baixarWord() {
+    if (!resultado?.conteudo) return;
+    setBaixando(true);
+    try {
+      const blob = await api.baixarDocx(resultado.conteudo, titulo);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = titulo.toLowerCase().replace(/\s+/g, "-") + ".docx";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setErro("Não foi possível gerar o arquivo Word.");
+    } finally {
+      setBaixando(false);
+    }
   }
 
   return (
@@ -73,6 +93,10 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".
                   custo US$ {resultado.custo_usd}
                 </span>
               )}
+              <button onClick={baixarWord} disabled={baixando}
+                className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-teal-700 hover:bg-teal-50 transition disabled:opacity-50">
+                {baixando ? <><Loader2 size={14} className="animate-spin" /> Gerando…</> : <><Download size={14} /> Baixar Word</>}
+              </button>
               <button onClick={copiar} className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-teal-700 hover:bg-teal-50 transition">
                 {copiado ? <><Check size={14} /> Copiado</> : <><Copy size={14} /> Copiar</>}
               </button>
