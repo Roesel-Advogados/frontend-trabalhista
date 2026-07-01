@@ -42,14 +42,14 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".
         <input ref={fileRef} type="file" accept={accept} className="hidden"
           onChange={(e) => { setFile(e.target.files?.[0] ?? null); setResultado(null); setErro(null); }} />
         <button onClick={() => fileRef.current?.click()}
-          className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-wine-200 bg-wine-50/50 py-10 text-wine-700 transition hover:border-wine-400 hover:bg-wine-50">
+          className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-teal-200 bg-teal-50/50 py-10 text-teal-700 transition hover:border-teal-400 hover:bg-teal-50">
           <Upload size={24} />
           <span className="text-sm font-bold">{file ? file.name : "Selecionar PDF ou Word"}</span>
           <span className="text-[11px] text-stone-400">{file ? "Clique para trocar o arquivo" : "Arraste ou clique para enviar"}</span>
         </button>
 
         <button onClick={gerar} disabled={!file || loading}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-wine-600 py-3 text-sm font-black uppercase tracking-widest text-white transition hover:bg-wine-700 disabled:opacity-40">
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-teal-600 py-3 text-sm font-black uppercase tracking-widest text-white transition hover:bg-teal-700 disabled:opacity-40">
           {loading ? <><Loader2 size={16} className="animate-spin" /> Gerando rascunho…</> : <><Scale size={16} /> Gerar rascunho</>}
         </button>
       </div>
@@ -62,18 +62,18 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".
 
       {resultado && (
         <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
-          <div className="flex items-center justify-between bg-wine-900 px-6 py-4">
+          <div className="flex items-center justify-between bg-teal-700 px-6 py-4">
             <div>
               <p className="font-display text-lg font-bold text-white">Rascunho gerado</p>
-              <p className="text-[11px] text-wine-200">Revise antes de protocolar</p>
+              <p className="text-[11px] text-teal-100">Revise antes de protocolar</p>
             </div>
             <div className="flex items-center gap-3">
               {resultado.custo_usd !== undefined && (
-                <span className="rounded-lg bg-wine-800 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-gold-400">
+                <span className="rounded-lg bg-teal-800 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-teal-50">
                   custo US$ {resultado.custo_usd}
                 </span>
               )}
-              <button onClick={copiar} className="flex items-center gap-1.5 rounded-lg bg-gold-400 px-3 py-1.5 text-xs font-bold text-wine-900 hover:bg-gold-500 transition">
+              <button onClick={copiar} className="flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-bold text-teal-700 hover:bg-teal-50 transition">
                 {copiado ? <><Check size={14} /> Copiado</> : <><Copy size={14} /> Copiar</>}
               </button>
             </div>
@@ -92,7 +92,7 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".
 
           <div className="p-6">
             <textarea readOnly value={resultado.conteudo}
-              className="h-[28rem] w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 font-mono text-[13px] leading-relaxed text-stone-700 focus:outline-none focus:ring-2 focus:ring-wine-500" />
+              className="h-[28rem] w-full resize-none rounded-xl border border-stone-200 bg-stone-50 p-4 font-mono text-[13px] leading-relaxed text-stone-700 focus:outline-none focus:ring-2 focus:ring-teal-500" />
           </div>
         </div>
       )}

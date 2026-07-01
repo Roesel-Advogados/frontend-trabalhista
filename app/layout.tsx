@@ -1,10 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Scale, FileSignature, Gavel, BookOpen, FileText } from "lucide-react";
+import Image from "next/image";
+import { FileSignature, Gavel, BookOpen, FileText } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "DefesaAI — Peças Trabalhistas",
+  title: "DefesaAI — Roesel Advogados",
   description: "Geração assistida de peças para defesa do reclamado",
 };
 
@@ -20,15 +21,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="pt-BR">
       <body>
         <div className="min-h-screen">
-          <header className="bg-wine-900 border-b-4 border-gold-400">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-              <Link href="/" className="flex items-center gap-3 group">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-wine-700 ring-1 ring-gold-400/40 group-hover:bg-wine-600 transition">
-                  <Scale size={20} className="text-gold-400" />
-                </span>
-                <div className="leading-tight">
-                  <p className="font-display text-xl font-bold text-white">DefesaAI</p>
-                  <p className="text-[10px] uppercase tracking-[0.2em] text-wine-200">Direito do Trabalho</p>
+          <header className="bg-white border-b-4 border-teal-600 shadow-sm">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+              <Link href="/" className="flex items-center gap-3">
+                <Image src="/logo-roesel.jpg" alt="Roesel Advogados" width={52} height={52}
+                  className="h-12 w-12 object-contain" priority />
+                <div className="leading-tight border-l border-stone-200 pl-3">
+                  <p className="font-display text-lg font-bold text-slate-700">DefesaAI</p>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-teal-600">Direito do Trabalho</p>
                 </div>
               </Link>
               <nav className="hidden gap-1 sm:flex">
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   const Icon = n.icon;
                   return (
                     <Link key={n.href} href={n.href}
-                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-wine-100 hover:bg-wine-800 hover:text-white transition">
+                      className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-teal-50 hover:text-teal-700 transition">
                       <Icon size={15} /> {n.label}
                     </Link>
                   );
