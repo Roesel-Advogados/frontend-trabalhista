@@ -1,12 +1,31 @@
-// Cliente da API FastAPI (backend separado).
 const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+
+async function mensagemErro(res: Response): Promise<string> {
+  const bruto = await res.text();
+  if (!bruto) return `Erro ${res.status} ao processar o arquivo.`;
+
+  try {
+    const payload = JSON.parse(bruto);
+    if (typeof payload.detail === "string") return payload.detail;
+    if (Array.isArray(payload.detail)) {
+      return payload.detail.map((item: any) => item.msg ?? String(item)).join("; ");
+    }
+  } catch {
+    // Alguns gateways devolvem texto puro; nesse caso, preservamos a mensagem.
+  }
+  return bruto;
+}
+
+async function garantirSucesso(res: Response): Promise<void> {
+  if (!res.ok) throw new Error(await mensagemErro(res));
+}
 
 async function postFile(path: string, file: File, extra?: Record<string, string>) {
   const fd = new FormData();
   fd.append("file", file);
   if (extra) for (const [k, v] of Object.entries(extra)) fd.append(k, v);
   const res = await fetch(`${API}${path}`, { method: "POST", body: fd });
-  if (!res.ok) throw new Error(await res.text());
+  await garantirSucesso(res);
   return res.json();
 }
 
@@ -16,7 +35,7 @@ async function postJSON(path: string, body: unknown) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(await res.text());
+  await garantirSucesso(res);
   return res.json();
 }
 
@@ -41,9 +60,9 @@ async function uploadViaStorage(
   const uploadRes = await fetch(signedUrl, {
     method: "PUT",
     body: file,
-    headers: { "Content-Type": file.type || "application/pdf" },
+    headers: { "Content-Type": file.type || "application/octet-stream" },
   });
-  if (!uploadRes.ok) throw new Error(await uploadRes.text());
+  await garantirSucesso(uploadRes);
 
   // 3) processa a partir do Storage
   return postJSON(fromStorageEndpoint, { path, bucket, ...extra });
@@ -71,7 +90,7 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dados),
     });
-    if (!res.ok) throw new Error(await res.text());
+    await garantirSucesso(res);
     return res.json();
   },
 
@@ -81,7 +100,7 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ conteudo, titulo }),
     });
-    if (!res.ok) throw new Error(await res.text());
+    await garantirSucesso(res);
     return res.blob();
   },
 };

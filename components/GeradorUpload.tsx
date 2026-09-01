@@ -10,7 +10,9 @@ type Props = {
   accept?: string;
 };
 
-export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".pdf,.docx" }: Props) {
+const FORMATOS_DOCUMENTO = ".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = FORMATOS_DOCUMENTO }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -22,8 +24,9 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = ".
   async function gerar() {
     if (!file) return;
     setLoading(true); setErro(null); setResultado(null);
-    try { setResultado(await onSubmit(file)); }
-    catch { setErro("Não foi possível gerar o rascunho. Tente novamente ou verifique o arquivo."); }
+    try { setResultado(await onSubmit(file));     } catch (err) {
+      setErro(err instanceof Error ? err.message : "Não foi possível processar o documento.");
+    }
     finally { setLoading(false); }
   }
 

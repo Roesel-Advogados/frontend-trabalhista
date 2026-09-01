@@ -13,6 +13,7 @@ export default function MemoriaPage() {
   const [lista, setLista] = useState<any[]>([]);
   const [carregandoLista, setCarregandoLista] = useState(true);
   const [msg, setMsg] = useState("");
+  const [erro, setErro] = useState("");
 
   async function carregar() {
     setCarregandoLista(true);
@@ -25,12 +26,18 @@ export default function MemoriaPage() {
   async function enviar() {
     if (!file) return;
     setLoading(true);
+    setMsg("");
+    setErro("");
     try {
       await api.uploadReferencia(file, tipo);
       setFile(null); setMsg("Documento indexado na memória.");
       setTimeout(() => setMsg(""), 3000);
       await carregar();
-    } finally { setLoading(false); }
+    } catch (err) {
+      setErro(err instanceof Error ? err.message : "Não foi possível indexar o documento.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   const contestacoes = lista.filter((d) => d.tipo === "contestacao").length;
@@ -59,11 +66,11 @@ export default function MemoriaPage() {
       </div>
 
       <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
-        <input ref={fileRef} type="file" accept=".pdf,.docx" className="hidden"
+        <input ref={fileRef} type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="hidden"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
         <div className="flex flex-wrap items-end gap-3">
           <div className="flex-1 min-w-[200px]">
-            <label className={LC}>Arquivo (PDF ou Word)</label>
+            <label className={LC}>Arquivo (PDF, DOCX ou DOC)</label>
             <button onClick={() => fileRef.current?.click()}
               className="mt-1 flex w-full items-center gap-2 rounded-xl border border-dashed border-teal-200 bg-teal-50/50 px-4 py-2.5 text-sm font-medium text-teal-700 hover:border-teal-400 transition">
               <Upload size={16} /> {file ? file.name : "Selecionar arquivo"}
@@ -85,6 +92,11 @@ export default function MemoriaPage() {
         {msg && (
           <div className="mt-3 flex items-center gap-2 text-sm font-semibold text-green-700">
             <CheckCircle2 size={16} /> {msg}
+          </div>
+        )}
+        {erro && (
+          <div className="mt-3 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            <span aria-hidden="true">!</span> {erro}
           </div>
         )}
       </div>
