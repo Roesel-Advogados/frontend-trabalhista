@@ -73,7 +73,8 @@ export const api = {
     uploadViaStorage("/api/defesa/upload-url", "/api/defesa/gerar-from-storage", file),
 
   gerarRecurso: (file: File, processoId?: string) =>
-    postFile("/api/recurso/gerar", file, processoId ? { processo_id: processoId } : undefined),
+    uploadViaStorage("/api/recurso/upload-url", "/api/recurso/gerar-from-storage", file,
+      processoId ? { processo_id: processoId } : undefined),
 
   uploadReferencia: (file: File, tipo: string) =>
     uploadViaStorage("/api/memoria/upload-url", "/api/memoria/upload-from-storage", file, {
