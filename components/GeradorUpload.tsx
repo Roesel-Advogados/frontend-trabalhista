@@ -32,7 +32,8 @@ export default function GeradorUpload({ titulo, subtitulo, onSubmit, accept = FO
 
   async function copiar() {
     if (!resultado?.conteudo) return;
-    await navigator.clipboard.writeText(resultado.conteudo);
+    // [[...]] marca destaques que só viram negrito/realce no Word
+    await navigator.clipboard.writeText(resultado.conteudo.replace(/\[\[|\]\]/g, ""));
     setCopiado(true); setTimeout(() => setCopiado(false), 2000);
   }
 
